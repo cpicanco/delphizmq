@@ -24,8 +24,13 @@ function zIncTimeUs( tNow, tIncrementUs: Int64 ): Int64;
 implementation
 
 uses
-  Windows;
+  {$IFDEF WINDOWS}
+    Windows;
+  {$ENDIF}
 
+  {$IFDEF LINUX}
+    Linux;
+  {$ENDIF}
 var
   cs: TRTLCriticalSection;
   fFrequency: Int64;
@@ -104,7 +109,13 @@ end;
 // get timestamp
 function zTimeStamp: Int64;
 begin
-  QueryPerformanceCounter( result );
+  {$IFDEF WINDOWS}
+    QueryPerformanceCounter( Result );
+  {$ENDIF}
+
+  {$IFDEF LINUX}
+    Result := GetTickCount64;
+  {$ENDIF}
 end;
 
 function zCalcTimeMs( tstart, tstop: Int64 ): Int64;
@@ -139,7 +150,14 @@ initialization
   {$else}
   InitializeCriticalSection( cs );
   {$endif}
-  QueryPerformanceFrequency( fFrequency );
+
+  {$IFDEF WINDOWS}
+    QueryPerformanceFrequency( fFrequency );
+  {$ENDIF}
+
+  {$IFDEF LINUX}
+    fFrequency := 0;
+  {$ENDIF}
 
 
 finalization
