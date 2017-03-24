@@ -1848,8 +1848,18 @@ procedure TZMQSocket.RegisterMonitor( proc: TZMQMonitorProc; events: TZMQMonitor
 var
   {$ifdef UNIX}
   tid: QWord;
+  {$endif}
+
+  {$ifdef FPC}
+    {$ifdef Win32}
+      tid: LongWord;
+    {$endif}
+
+    {$ifdef Win64}
+      tid: QWord;
+    {$endif}
   {$else}
-  tid: Cardinal;
+    tid: Cardinal;
   {$endif}
 begin
   if fMonitorRec <> nil then
